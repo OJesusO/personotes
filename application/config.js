@@ -1,8 +1,10 @@
 var path = require('path');
 
 var CONFIG = {
+    pwd_salt_rounds: 8,
+    default_avatar: '/images/avatar.jpg',
     db: {
-        mongodb: "mongodb://localhost:27017/nodedb"
+        mongodb: 'mongodb://localhost:27017/nodedb',
     },
     skins: {
         default: {
@@ -25,8 +27,8 @@ CONFIG._init_ = function(app){
     var express = require('express');
     var favicon = require('serve-favicon');
 
-    app.use(favicon(path.join(app.BASE_DIR, 'public', 'favicon.ico')));
     app.use(express.static(path.join(app.BASE_DIR, 'public')));
+    app.use(favicon(path.join(app.BASE_DIR, 'public', 'static', 'favicon.ico')));
 
     this._app(app);
     this._skin(_skin||'default', true);

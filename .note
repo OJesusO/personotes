@@ -1,0 +1,59 @@
+Article
+	id			文章Id
+	title		文章标题
+	content		文章内容
+	user_id		文章创建者
+	cretime		文章创建时间
+	category	文章分类
+	tags		文章标签
+	show		是否推送展示(0|1)
+	private		是否为私密文章(0|1)
+	[
+		private 字段优先级高于 show字段，show 字段为 1 时候，首页读取文章列表时候 为可读（private 字段为 0 的情况下）
+	 	private 字段为 1 时候，文章处于加密中（非对称加密），文章详情读取的时候需要输入密码（前端进行加解密）
+	]
+
+
+ User
+ 	id 			用户Id
+ 	username	用户名
+ 	password	用户密码
+ 	email		邮箱号
+ 	phone		手机号
+ 	open_pwd	open 密码
+ 	avatar		用户头像
+ 	cretime		用户创建时间
+ 	...
+ 	[
+		open_pwd 字段用于用户打开锁定的文件夹（目录|分类）
+		private 字段为 1 的文章需要使用该密码打开
+		近期打开过的自动打开
+ 	]
+
+
+Category
+	id 			分类Id
+	pid			上级分类Id(用于表自关联)
+	name		分类名
+	lock		是否处于锁定(0|1)
+	user_id		文章创建者
+ 	cretime		用户创建时间
+	[
+		lock 字段为 1 时候，打开该文件夹（目录|分类）需要输入 User.open_pwd
+	]
+
+
+Share
+	id 			分享Id
+	article_id	文章Id
+	share_hash	分享hash
+	share_start	分享开始时间
+	share_end	分享结束时间
+	user_id		文章创建者
+	cretime		创建时间
+	[
+		share_hash 字段用于生成特定的分享 URL（例如：http://zhang.ojesuso.cn/article_desc/[share_hash]/），也用于匹配对应的文章
+		share_hash 的生成方式为：md5(文章Id)
+		share_end 字段保存最大分享时间（share_time = share_start + 用户选择的天数，如果为空，则表示分享不过期），超出该时间分享过期
+					用户可手动刷新时间（重置share_start、share_end），也可删除分享记录
+	]
