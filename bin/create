@@ -1,0 +1,70 @@
+#!/usr/bin/env node
+
+if (process.argv.length > 2) {
+    createByAuto(process.argv.slice(2));
+} else if (process.argv.length == 1) {
+    showHelp();
+} else {
+    createByReadLine();
+}
+
+
+function createByAuto(data) {
+    var k = null, t = null, d = {
+        m: [], v: [], c: [],
+    };
+    for (var i in data) {
+        t = data[i];
+        switch (t) {
+            case '-m': case '--model': k = 'm'; break;
+            case '-v': case '--view': k = 'v'; break;
+            case '-c': case '--control': k = 'c'; break;
+            default: k && d[k].push(t);
+        }
+    }
+    var mm = d.m.length, vv = d.v.length, cc = d.c.length;
+    if (!mm && !vv && !cc) {
+        showHelp();
+    } else {
+        mm && createModel(d.m);
+        vv && createView(d.v);
+        cc && createControl(d.c);
+    }
+};
+
+function createByReadLine() {
+    var readline = require('readline');
+    var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        prompt: '请输入> '
+    });
+    rl.prompt();
+    rl.question('请输入模块名: ', (module) => {
+        createModule(module);
+        rl.close();
+    }).on('close', () => {
+      console.log('再见!');
+      process.exit(0);
+    });
+
+};
+
+function showHelp() {
+    console.log(
+        '123'
+    );
+    process.exit(0);
+};
+
+function createModel(data) {
+    console.log(data)
+};
+
+function createView(data) {
+    console.log(data)
+};
+
+function createControl(data) {
+    console.log(data)
+};

@@ -11,22 +11,10 @@ module.exports = Actions;
  * @author: OJesusO
  */
 Actions.home = function(req, res){
-    if(!req.session.user){                     //到达/home路径首先判断是否已经登录
-        req.session.error = "请先登录！"
-        res.redirect("/login");                //未登录则重定向到 /login 路径
-    } else {
-        console.log(Category.model.findOne(), 666)
-        Category.model.create({
-            pid: Category.model.findOne()._id,   //上级分类Id(用于表自关联)
-            name: 'asdf',  //分类名
-            user_id: req.session.user, //分类创建者
-            lock: true,  //是否处于锁定(0|1)
-            cretime: Date(),       //用户创建时间
-        }, function(err, doc){
-            console.log(err, doc)
-        })
+    if (!req.user.islogin) {
+        res.redirect('/login');                //未登录则重定向到 /login 路径
     }
-    res.render("User/home", {title:'Home'});         //已登录则渲染home页面
+    res.render('User/home', {title:'Home'});         //已登录则渲染home页面
 };
 
 
@@ -36,8 +24,7 @@ Actions.home = function(req, res){
  */
 Actions.logout = function(req, res){
     req.session.user = null;
-    req.session.error = null;
-    res.redirect("/");
+    res.redirect('/');
 };
 
 
@@ -49,7 +36,7 @@ Actions.login = new function(){
     var _obj = this;
     _obj.UserLogic = User.logic;
     _obj.get = function(req, res){
-        res.render("User/login", {title:'User Login'});
+        res.render('User/login', {title:'User Login'});
     };
     _obj.post = function(req, res){
         var username = req.body.username;
@@ -76,7 +63,7 @@ Actions.register = new function(){
     var _obj = this;
     _obj.UserLogic = User.logic;
     _obj.get = function(req, res){
-        res.render("User/register", {title:'User register', isLogin:Boolean(req.session.user)});
+        res.render('User/register', {title:'User register', islogin:req.user.islogin});
     };
     _obj.post = function(req, res){
         var username = req.body.username;

@@ -1,5 +1,7 @@
+var config = require('./config');
 var Index = require('./routes/Index');
 var User = require('./routes/User');
+var Article = require('./routes/Article');
 
 
 module.exports = {_init_: function(app){
@@ -8,14 +10,11 @@ module.exports = {_init_: function(app){
 
     app.use('/', Index);
     app.use('/user', User);
-    app.use('/login', Index);
-    app.use('/register', Index);
-    app.use('/home', Index);
-    app.use("/logout", Index);
+    app.use('/article', Article);
 
     app.use(handler_404);   // catch 404 and forward to error handler
     app.use(handler_error); // error handler
-    
+
 }};
 
 
@@ -23,14 +22,13 @@ module.exports = {_init_: function(app){
  * before handler
  * @author: OJesusO
  */
-function handler_before(req,res,next) {
-    res.locals.user = req.session.user;   // 从session 获取 user对象
-    var err = req.session.error;   //获取错误信息
-    delete req.session.error;
-    res.locals.message = "";   // 展示的信息 message
-    if(err){
-        res.locals.message = '<div class="alert alert-danger" style="margin-bottom:20px;color:red;">'+err+'</div>';
-    }
+function handler_before(req, res, next) {
+    req.user = {
+        uinfo: req.session.user,
+        islogin: Boolean(req.session.user),
+    };
+    res.locals.uinfo = req.session.user;
+    res.locals.config = config;
     next();  //中间件传递
 };
 
